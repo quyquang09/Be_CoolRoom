@@ -8,7 +8,6 @@ let initWebRoutes = (app) => {
     router.post('/api/create-new-user', userController.handleCreateNewUser);
     router.put('/api/edit-user', userController.handleEditUser);
     router.delete('/api/delete-user', userController.handleDeleteUser);
-    router.delete('/api/delete-user', userController.handleDeleteUser);
     router.get("/api/user/:id/verify/:token/",userController.handleVerifyEmail);
     router.get("/api/valuesensor/:type/sensor/:value",userController.handleGetValueSensor);
     router.post("/api/post-data-esp32",userController.handlePostDataFromEsp32);
