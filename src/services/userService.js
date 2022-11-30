@@ -19,7 +19,7 @@ let handleUserLogin =(email,password)=>{
                 if(user){
                    let checkPass = await bcrypt.compareSync(password,user.password)
                    if(checkPass){
-
+                    console.log(user)
                     if(!user.verifed){
                         userData.errCode=4;
                         userData.message='Your account has not been verified. Please verify your account to continue'
@@ -267,6 +267,39 @@ let getValueSensor =(type,value)=>{
         }
     })
 }
+let createNewValueSensor =(data) =>{
+    return new Promise(async(resolve,reject)=>{
+        try {
+            let date_ob = new Date();
+            let day = ("0" + date_ob.getDate()).slice(-2);
+            let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+            let year = date_ob.getFullYear();
+            let currentDate = year + "-" + month + "-" + day;
+            let hours = date_ob.getHours();
+            let minutes = date_ob.getMinutes();
+            let seconds = date_ob.getSeconds();
+            let time = hours + ":" + minutes + ":" + seconds;
+            let valueSensor = await db.valueSensor.create({
+                temperature:data.temperature,
+                humidity:data.humidity,
+                date:currentDate,
+                time:time,
+                locationID:1,
+                userID:1,
+            })
+                console.log(valueSensor)
+  
+                resolve({
+                    errCode:0,
+                    message:'ok'
+                })
+            
+            
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 module.exports ={
     handleUserLogin:handleUserLogin,
     getAllUsers:getAllUsers,
@@ -275,4 +308,5 @@ module.exports ={
     updateUser:updateUser,
     verifyEmail:verifyEmail,
     getValueSensor:getValueSensor,
+    createNewValueSensor:createNewValueSensor,
 }
