@@ -11,6 +11,7 @@ let initWebRoutes = (app) => {
     router.get("/api/user/:id/verify/:token/",userController.handleVerifyEmail);
     router.get("/api/valuesensor/:type/sensor/:value",userController.handleGetValueSensor);
     router.post("/api/post-data-esp32",userController.handlePostDataFromEsp32);
+    router.post("/api/send-email-warning",userController.handleSendEmailWarning);
     return app.use("/", router);
 }
 

@@ -14,10 +14,9 @@ let sendSimpleEmail =async(dataSend)=>{
     
       // send mail with defined transport object
       let info = await transporter.sendMail({
-        from: '"Luxas 👻" <noreply@example.com>', // sender address
+        from: '"Noname 👻" <noreply@example.com>', // sender address
         to: dataSend.receiverEmail , // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello world?", // plain text body
+        subject: "Verify Email ✔", // Subject line
         html: `
         <div style="background-color:#eeebeb;padding:2px 22px 32px">
         <h3 style="font-size:32px;font-weight:600;color:#000;text-align:center">Hello ${dataSend.firstname}</h3>
@@ -37,8 +36,45 @@ let sendSimpleEmail =async(dataSend)=>{
         </div> `, // html body
       });
 }
-
+let sendEmailWarning =async(dataSend)=>{
+  let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.EMAIL_APP, // generated ethereal user
+        pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+  
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+      from: '"Noname 👻" <noreply@example.com>', // sender address
+      to: dataSend.receiverEmail , // list of receivers
+      subject: `Warning ${dataSend.type} !`, // Subject line
+      html: `
+      <div style="background-color:#eeebeb;padding:2px 22px 32px">
+      <h3 style="font-size:32px;font-weight:600;color:#000;text-align:center">Hello ${dataSend.firstname}</h3>
+      <p style="font-size:20px;text-align:left;padding:0 75px">Warning system </p>
+      <div>
+        <br> <strong>Thông tin chi tiết:</strong>
+        <br>Day-Month-Year : ${dataSend.date}
+        <br>Time : ${dataSend.time}
+        <br>${dataSend.type} : ${dataSend.value}<br>
+      </div>
+      <br>
+      <br>
+      <div>Please check the devices again</div>
+      <div style="margin:22px 0">Thank you very much.</div>
+      </div>
+      </div> `, // html body
+    });
+}
 
 module.exports ={
-    sendSimpleEmail:sendSimpleEmail
+    sendSimpleEmail:sendSimpleEmail,
+    sendEmailWarning:sendEmailWarning,
 }

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   valueSensor.init({
     temperature: DataTypes.STRING,
     humidity: DataTypes.STRING,
-    date: DataTypes.DATE,
+    date: DataTypes.DATEONLY,
     time: DataTypes.TIME,
     locationID: DataTypes.INTEGER,
     userID: DataTypes.INTEGER,

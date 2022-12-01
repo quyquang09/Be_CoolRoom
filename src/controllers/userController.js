@@ -90,7 +90,18 @@ let handlePostDataFromEsp32 =async(req,res)=>{
             message: "Missing required parameters",
         })
     }
-    let message= await userServices.createNewValueSensor(req.body);
+    let message= await userServices.createNewValueSensor(data);
+    return res.status(200).json(message)
+}
+let handleSendEmailWarning =async(req,res)=>{
+    let data = req.body;
+    if(!data){
+        return res.status(500).json({
+            errCode:1,
+            message: "Missing required parameters",
+        })
+    }
+    let message= await userServices.sendEmailWarning(data);
     return res.status(200).json(message)
 }
 module.exports ={
@@ -102,4 +113,5 @@ module.exports ={
     handleVerifyEmail:handleVerifyEmail,
     handleGetValueSensor:handleGetValueSensor,
     handlePostDataFromEsp32:handlePostDataFromEsp32,
+    handleSendEmailWarning:handleSendEmailWarning,
 }

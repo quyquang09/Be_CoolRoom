@@ -300,6 +300,20 @@ let createNewValueSensor =(data) =>{
         }
     })
 }
+let sendEmailWarning = async(data)=>{
+        await emailService.sendEmailWarning({
+            firstname:data.firstname,
+            receiverEmail:data.email,
+            type:data.type,
+            date:data.date,
+            time:data.time,
+            value:data.value,
+        });
+     return {
+        errCode:0,
+        message:'Ok'
+     }
+}
 module.exports ={
     handleUserLogin:handleUserLogin,
     getAllUsers:getAllUsers,
@@ -309,4 +323,5 @@ module.exports ={
     verifyEmail:verifyEmail,
     getValueSensor:getValueSensor,
     createNewValueSensor:createNewValueSensor,
+    sendEmailWarning:sendEmailWarning,
 }
