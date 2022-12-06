@@ -1,0 +1,36 @@
+{
+    "development": {
+      "username": "postgres",
+      "password": "eVD8oruBA4DeJGaO1ubg",
+      "database": "railway",
+      "host": "containers-us-west-140.railway.app",
+      "port":"6435",
+      "oracle":"postgresql://${{ PGUSER }}:${{ PGPASSWORD }}@${{ PGHOST }}:${{ PGPORT }}/${{ PGDATABASE }}",
+      "dialect": "postgres",
+      "logging":false,
+      "query":{
+        "raw":true
+      },
+      "dialectOption":{
+        "ssl":{
+          "require":true,
+          "rejectUnauthorized":false
+        }
+      },
+      "timezone":"+07:00"
+    },
+    "test": {
+      "username": "root",
+      "password": null,
+      "database": "database_test",
+      "host": "127.0.0.1",
+      "dialect": "mysql"
+    },
+    "production": {
+      "username": "root",
+      "password": null,
+      "database": "database_production",
+      "host": "127.0.0.1",
+      "dialect": "mysql"
+    }
+  }
