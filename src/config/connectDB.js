@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
     logging:false,
     dialectOption:{
       ssl:{
-        require:false,
+        require:true,
         rejectUnauthorized:false
       }
     }
@@ -26,4 +26,5 @@ let connectDB = async()=> {
       } catch (error) {
         console.error('Unable to connect to the database:', error);
       }
-    }
+}
+module.exports =connectDB;
