@@ -1,5 +1,6 @@
 import express from "express";
 import userController from "../controllers/userController"
+import deviceController from "../controllers/deviceController"
 let router = express.Router();
 
 let initWebRoutes = (app) => {
@@ -12,6 +13,15 @@ let initWebRoutes = (app) => {
     router.get("/api/valuesensor/:type/sensor/:value",userController.handleGetValueSensor);
     router.post("/api/post-data-esp32",userController.handlePostDataFromEsp32);
     router.post("/api/send-email-warning",userController.handleSendEmailWarning);
+
+    router.get("/api/get-device",deviceController.getDeviceById);
+    router.put("/api/update-device",deviceController.handleUpdateDevice);
+    router.post("/api/create-new-device",deviceController.handleCreateNewDevice);
+    router.get("/api//get-location",deviceController.handleGetLocation);
+    router.delete("/api/delete-device",deviceController.handleDeleteDevice);
+    router.get("/api/status-device",deviceController.handleGetStatusDevice);
+    router.post("/api/create-new-status-device",deviceController.handleCreateNewStatusDevice);
+
     return app.use("/", router);
 }
 

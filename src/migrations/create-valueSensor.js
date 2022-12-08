@@ -23,7 +23,7 @@ module.exports = {
             locationID: {
                 type: Sequelize.INTEGER
             },
-            userID: {
+            userId: {
                 type: Sequelize.INTEGER
             },
             createdAt: {

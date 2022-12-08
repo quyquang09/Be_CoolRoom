@@ -12,7 +12,7 @@ let handleUserLogin =(email,password)=>{
             let isExist = await checkUserEmail(email);
             if(isExist){
                 let user =await db.User.findOne({
-                    attributes :['email','username','roleID','password','verifed','firstname'],
+                    attributes :['email','username','roleID','password','verifed','id'],
                     where:{email:email},
                     raw :true,
                 });
@@ -84,7 +84,7 @@ let getAllUsers =(userId) =>{
             if (userId==='ALL'){
                 users =await db.User.findAll({
                     attributes: {
-                        exclude:['password']
+                        exclude:['password','R1']
                     }
                 })
             }
@@ -115,8 +115,6 @@ let createNewUser =(data) =>{
             }else {
                 let hashPasswordFromBcrypt = await hashUserPassword(data.password);
                 let user = await db.User.create({
-                    lastname:data.lastname,
-                    firstname:data.firstname,
                     email:data.email,
                     username:data.username,
                     password:hashPasswordFromBcrypt,
@@ -124,14 +122,12 @@ let createNewUser =(data) =>{
                     verifed:false,
                     roleID:'R3'
                 })
-                console.log(user)
+                
                 let token = await db.Token.create({
                     token: crypto.randomBytes(32).toString("hex"),
                     userId: user.id,
                 });
-                
-                const url = `${process.env.BASE_URL}client/verify-email.html?iduser=${user.id}&&token=${token.token}`;
-                console.log(url)
+                const url = `${process.env.BASE_URL}user/${user.id}/verify/${token.token}`;
                 await emailService.sendSimpleEmail({
                     firstname:data.firstname,
                     receiverEmail:data.email,
@@ -181,12 +177,22 @@ let updateUser =(data) =>{
                 raw:false
             })
             if(user){
-                user.username = data.username;
-                await user.save();
-                resolve({
-                    errCode:0,
-                    message:`Update the user succeeds`
-                })
+                if(data.type==='username'){
+                    user.username = data.username;
+                    await user.save();
+                    resolve({
+                        errCode:0,
+                        message:`Update the user succeeds`
+                    })
+                }
+                if(data.type ==="role"){
+                    user.roleID = data.role;
+                    await user.save();
+                    resolve({
+                        errCode:0,
+                        message:`Update the Role succeeds`
+                    })
+                }
             }else {
                 resolve({
                     errCode:1,
