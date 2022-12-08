@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     date: DataTypes.DATEONLY,
     time: DataTypes.TIME,
     locationID: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
+    userID: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'valueSensor',

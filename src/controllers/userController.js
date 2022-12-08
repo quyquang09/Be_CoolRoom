@@ -81,8 +81,7 @@ let handleGetValueSensor= async(req,res)=>{
     }
 }
 let handlePostDataFromEsp32 =async(req,res)=>{
-    let data = req.body;
-    console.log(data)
+    let data = req.query;
     if(!data.temperature && !data.humidity){
         return res.status(500).json({
             errCode:1,
