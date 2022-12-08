@@ -16,12 +16,12 @@ const custumizeConfig ={
   dialect: 'postgres',
   oracle:process.env.DDB_DATABASE_URL,
   logging:false,
-  // dialectOption:{
-  //     ssl:{
-  //       require:true,
-  //       rejectUnauthorized:false
-  //     }
-  //   }
+  dialectOption:{
+      ssl:{
+        require:true,
+        rejectUnauthorized:false
+      }
+    }
 }
 
 sequelize = new Sequelize(

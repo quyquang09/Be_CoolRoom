@@ -11,7 +11,7 @@ let initWebRoutes = (app) => {
     router.delete('/api/delete-user', userController.handleDeleteUser);
     router.get("/api/user/:id/verify/:token/",userController.handleVerifyEmail);
     router.get("/api/valuesensor/:type/sensor/:value",userController.handleGetValueSensor);
-    router.get("/api/post-data-esp32",userController.handlePostDataFromEsp32);
+    router.post("/api/post-data-esp32",userController.handlePostDataFromEsp32);
     router.post("/api/send-email-warning",userController.handleSendEmailWarning);
 
     router.get("/api/get-device",deviceController.getDeviceById);
