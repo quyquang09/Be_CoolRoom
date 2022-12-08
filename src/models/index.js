@@ -18,7 +18,7 @@ const custumizeConfig ={
   logging:false,
   dialectOption:{
       ssl:{
-        require:false,
+        require:true,
         rejectUnauthorized:false
       }
     }
