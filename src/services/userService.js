@@ -273,39 +273,7 @@ let getValueSensor =(type,value)=>{
         }
     })
 }
-let createNewValueSensor =(data) =>{
-    return new Promise(async(resolve,reject)=>{
-        try {
-            let date_ob = new Date();
-            let day = ("0" + date_ob.getDate()).slice(-2);
-            let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-            let year = date_ob.getFullYear();
-            let currentDate = year + "-" + month + "-" + day;
-            let hours = date_ob.getHours();
-            let minutes = date_ob.getMinutes();
-            let seconds = date_ob.getSeconds();
-            let time = hours + ":" + minutes + ":" + seconds;
-            let valueSensor = await db.valueSensor.create({
-                temperature:data.temperature,
-                humidity:data.humidity,
-                date:currentDate,
-                time:time,
-                locationID:1,
-                userID:1,
-            })
-                console.log(valueSensor)
-  
-                resolve({
-                    errCode:0,
-                    message:'ok'
-                })
-            
-            
-        } catch (error) {
-            reject(error)
-        }
-    })
-}
+
 let sendEmailWarning = async(data)=>{
         await emailService.sendEmailWarning({
             firstname:data.firstname,
@@ -328,6 +296,5 @@ module.exports ={
     updateUser:updateUser,
     verifyEmail:verifyEmail,
     getValueSensor:getValueSensor,
-    createNewValueSensor:createNewValueSensor,
     sendEmailWarning:sendEmailWarning,
 }

@@ -80,17 +80,6 @@ let handleGetValueSensor= async(req,res)=>{
         return res.status(200).json(message)
     }
 }
-let handlePostDataFromEsp32 =async(req,res)=>{
-    let data = req.body;
-    if(!data.temperature && !data.humidity){
-        return res.status(500).json({
-            errCode:1,
-            message: "Missing required parameters",
-        })
-    }
-    let message= await userServices.createNewValueSensor(data);
-    return res.status(200).json(message)
-}
 let handleSendEmailWarning =async(req,res)=>{
     let data = req.body;
     if(!data){
@@ -110,6 +99,5 @@ module.exports ={
     handleDeleteUser:handleDeleteUser,
     handleVerifyEmail:handleVerifyEmail,
     handleGetValueSensor:handleGetValueSensor,
-    handlePostDataFromEsp32:handlePostDataFromEsp32,
     handleSendEmailWarning:handleSendEmailWarning,
 }

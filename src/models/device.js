@@ -11,13 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Device.belongsTo(models.Location,{foreignKey: 'locationID'})
+      Device.belongsTo(models.Location,{foreignKey: 'locationID'});
+      Device.hasOne(models.statusDevice,{foreignKey: 'deviceId'})
     }
   };
   Device.init({
     deviceName: DataTypes.STRING,
-    typeDevice: DataTypes.STRING,
-    deviceId: DataTypes.INTEGER, 
+    typeDevice: DataTypes.STRING, 
     locationID: DataTypes.INTEGER, 
     userId: DataTypes.INTEGER,
   }, {

@@ -1,5 +1,5 @@
 import db from '../models/index'
-
+const { Sequelize } = require("sequelize");
 const updateDevice = (inputData)=>{
     return new Promise(async(resolve,reject)=>{
         try {
@@ -37,18 +37,36 @@ const updateDevice = (inputData)=>{
         }
     })
 }
-const getDeviceById = (id)=>{
+const getDeviceById = (inputData)=>{
     return new Promise(async(resolve,reject)=>{
         try {
            
-            if (!id){
+            if (!inputData){
                 resolve({
                     errCode:1,
                     message: "Missing required parameter"
                 })
             }else {
+                if(inputData.locationId ==='all'){
+                    let data =await db.Location.findAll({
+                        where:{userId:inputData.userId},
+                        attributes: {
+                            exclude:['createdAt','updatedAt']
+                        },
+                        include:[
+                            {model: db.Device, }
+                        ],
+                        raw: true,
+                        nest:true
+                    })
+                    resolve({
+                        errCode:0,
+                        data:data,
+                    })
+                }
+                else{
                 let data =await db.Location.findAll({
-                    where:{userId:id},
+                    where:{userId:inputData.userId,id:inputData.locationId},
                     attributes: {
                         exclude:['createdAt','updatedAt']
                     },
@@ -61,7 +79,7 @@ const getDeviceById = (id)=>{
                 resolve({
                     errCode:0,
                     data:data,
-                })
+                })}
             }
             
 
@@ -217,19 +235,46 @@ const getStatusDevice = (inputData)=>{
                     message: "Missing required parameter"
                 })
             }else {
-                let data =await db.statusDevice.findAll({
+                let values =''
+            if(inputData.type ==='day'){
+                values =await db.statusDevice.findAll({
                     where:{
                         userId:inputData.userId,
-                        locationID:inputData.locationID
+                        locationID:inputData.locationId,
+                        deviceId:inputData.deviceId,
+                        date:inputData.value
                     },
                     attributes: {
                         exclude:['createdAt','updatedAt']
                     },
+                    raw: true,
+                    
                 })
                 resolve({
                     errCode:0,
-                    data
+                    values
                 })
+            }
+            if(inputData.type==='month'){
+                values =await db.statusDevice.findAll({
+                    where:{
+                        userId:inputData.userId,
+                        locationID:inputData.locationId,
+                        deviceId:inputData.deviceId,
+                       where: Sequelize.where(Sequelize.fn("month", Sequelize.col("date")), inputData.value)
+                    },
+                    attributes: {
+                        exclude:['createdAt','updatedAt']
+                    },
+                    raw: true,
+                    
+                })
+                resolve({
+                    errCode:0,
+                    values
+                })
+             
+            }
             }
             
         } catch (error) {
@@ -237,7 +282,24 @@ const getStatusDevice = (inputData)=>{
         }
     })
 }
+const countStatusTime = (date, start, end) => {
+    let dateStart = date + ' ' + start;
+    let dateEnd = date + ' ' + end;
+    var diff = Math.abs(new Date(dateStart.replace(/-/g, '/')) - new Date(dateEnd.replace(/-/g, '/')));
 
+    let seconds = diff / 1000;
+    const hours = parseInt(seconds / 3600);
+    seconds = seconds % 3600;
+    const minutes = parseInt(seconds / 60);
+    seconds = seconds % 60;
+    return (
+        (hours < 10 ? '0' + hours : hours) +
+        ':' +
+        (minutes < 10 ? '0' + minutes : minutes) +
+        ':' +
+        (seconds < 10 ? '0' + seconds : seconds)
+    );
+};
 let createNewStatusDevice =(inputData) =>{
     return new Promise(async(resolve,reject)=>{
         try {
@@ -246,20 +308,42 @@ let createNewStatusDevice =(inputData) =>{
                         deviceId:+inputData.deviceId,
                         locationID:+inputData.locationID,
                         userId:+inputData.userId,
-                        status:inputData.status,
                         date:inputData.date,
                         stateEndTime:'00:00:00',
                     },
                     raw:false,
                 })
                 if(check){
-                    
-                    check.stateEndTime = inputData.time;
-                    await check.save();
-                    resolve({
-                        errCode:0,
-                        message:'update status end time successful'
-                    })
+                    if(check.status ===inputData.status){
+                        let statusTime = countStatusTime(check.date,check.stateStartTime ,inputData.time);
+                        check.stateEndTime = inputData.time;
+                        check.statusTime =statusTime;
+                        await check.save();
+                        resolve({
+                            errCode:0,
+                            message:'update status end time successful'
+                        })
+                    }else {
+                        let statusTime = countStatusTime(check.date,check.stateStartTime ,inputData.time);
+                        check.stateEndTime = inputData.time;
+                        check.statusTime =statusTime;
+                        await check.save();
+                       
+                        let statusDevice = await db.statusDevice.create({
+                            deviceId:+inputData.deviceId,
+                            locationID:+inputData.locationID,
+                            userId:+inputData.userId,
+                            status:inputData.status,
+                            stateStartTime:inputData.time,
+                            date:inputData.date,
+                            stateEndTime:'00:00:00',
+                        })
+                        resolve({
+                            errCode:0,
+                            message:'update status end time successful'
+                        })
+                    }
+                   
                 }else {
                     let statusDevice = await db.statusDevice.create({
                         deviceId:+inputData.deviceId,
@@ -281,7 +365,41 @@ let createNewStatusDevice =(inputData) =>{
         }
     })
 }
-
+let createNewValueSensor =(data) =>{
+    return new Promise(async(resolve,reject)=>{
+        try {
+            let date_ob = new Date();
+            let day = ("0" + date_ob.getDate()).slice(-2);
+            let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+            let year = date_ob.getFullYear();
+            let currentDate = year + "-" + month + "-" + day;
+            let hours = date_ob.getHours();
+            let minutes = date_ob.getMinutes();
+            let seconds = date_ob.getSeconds();
+            let time = hours + ":" + minutes + ":" + seconds;
+            let valueSensor = await db.valueSensor.create({
+                temperature:data.temperature,
+                humidity:data.humidity,
+                dust10:data.dust10,
+                dust25:data.dust25,
+                pressIn:data.pressIn,
+                pressOut:data.pressOut,
+                date:currentDate,
+                time:time,
+                locationID:1,
+                userID:1,
+            })
+                resolve({
+                    errCode:0,
+                    message:'ok'
+                })
+            
+            
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 module.exports ={
     getDeviceById:getDeviceById,
     updateDevice:updateDevice,
@@ -289,5 +407,6 @@ module.exports ={
     getLocation:getLocation,
     deleteDevice:deleteDevice,
     getStatusDevice:getStatusDevice,  
-    createNewStatusDevice:createNewStatusDevice
+    createNewStatusDevice:createNewStatusDevice,
+    createNewValueSensor:createNewValueSensor,
 }

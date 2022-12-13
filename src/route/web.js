@@ -11,15 +11,15 @@ let initWebRoutes = (app) => {
     router.delete('/api/delete-user', userController.handleDeleteUser);
     router.get("/api/user/:id/verify/:token/",userController.handleVerifyEmail);
     router.get("/api/valuesensor/:type/sensor/:value",userController.handleGetValueSensor);
-    router.post("/api/post-data-esp32",userController.handlePostDataFromEsp32);
     router.post("/api/send-email-warning",userController.handleSendEmailWarning);
-
+    
+    router.post("/api/post-data-esp32",deviceController.handlePostDataFromEsp32);
     router.get("/api/get-device",deviceController.getDeviceById);
     router.put("/api/update-device",deviceController.handleUpdateDevice);
     router.post("/api/create-new-device",deviceController.handleCreateNewDevice);
     router.get("/api//get-location",deviceController.handleGetLocation);
     router.delete("/api/delete-device",deviceController.handleDeleteDevice);
-    router.get("/api/status-device",deviceController.handleGetStatusDevice);
+    router.get("/api/get-status-device",deviceController.handleGetStatusDevice);
     router.post("/api/create-new-status-device",deviceController.handleCreateNewStatusDevice);
 
     return app.use("/", router);

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Location.hasOne(models.Device,{foreignKey: 'locationID'})
+      Location.hasOne(models.statusDevice,{foreignKey: 'locationID'})
     }
   };
   Location.init({

@@ -14,11 +14,23 @@ module.exports = {
             humidity: {
                 type: Sequelize.STRING
             },
+            dust25: {
+                type: Sequelize.STRING
+            },
+            dust10: {
+                type: Sequelize.STRING
+            },
+            pressIn: {
+                type: Sequelize.STRING
+            },
+            pressOut: {
+                type: Sequelize.STRING
+            },
             date: {
                 type: Sequelize.DATEONLY
             },
             time: {
-                type: Sequelize.TIME
+                type: Sequelize.STRING
             },
             locationID: {
                 type: Sequelize.INTEGER
