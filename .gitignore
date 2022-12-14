@@ -3,3 +3,5 @@
 /.idea
 .idea/
 package-lock.json
+# build artifacts
+dist
